@@ -8,6 +8,9 @@ package owlneo;
 
 import java.util.ArrayList;
 import java.util.Set;
+import org.semanticweb.HermiT.Reasoner;
+import org.semanticweb.owlapi.model.AxiomType;
+import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
@@ -29,7 +32,8 @@ public class Structure2Cypher {
     private OWLOntology ontology;
     private OWLReasoner reasoner;
     
-    private String cypher;
+    private String superclassCypher;
+    private String classCreateCypher;
     
     public Structure2Cypher(OWLOntologyManager manager,OWLOntology ontology, 
             OWLReasoner reasoner){
@@ -37,7 +41,39 @@ public class Structure2Cypher {
         this.manager=manager;
         this.ontology=ontology;
         this.reasoner=reasoner;
-        cypher="";
+        superclassCypher="";
+        classCreateCypher="";
+    }
+    
+    public void setUpdatedOntology(OWLOntology ontology){
+        this.ontology=ontology;
+        reasoner=new Reasoner.ReasonerFactory().createReasoner(ontology);
+    }
+    
+    
+    public void buildClassCypher(){
+        Set<OWLClass> classes = ontology.getClassesInSignature();
+        //cleans the variable of previous calls to the method
+        classCreateCypher="";
+        for (OWLClass c:classes){
+            String temp = shortName(c.toStringID());
+            String toAdd = "CREATE (n {owl:\"class\", name:\""+temp+"\", "
+                    + "iri:\""+c.toStringID()+"\"});\n\n";
+            classCreateCypher=classCreateCypher+toAdd;
+        }
+    }
+    
+    public String getAnnotationsCypher(){
+        Set<OWLAnnotationAssertionAxiom> axioms =
+                ontology.getAxioms(AxiomType.ANNOTATION_ASSERTION);
+        Annotation2Cypher annot = new Annotation2Cypher(axioms);
+        annot.createCypher();
+        return annot.getCypher();
+ 
+    }
+    
+    public String getClassCypher(){
+        return classCreateCypher;
     }
     
     public ArrayList<ArrayList<String>> getIndividualList(){
@@ -65,7 +101,7 @@ public class Structure2Cypher {
         return individuals;
     }
     
-    public void buildCypher(){
+    public void buildSuperclassCypher(){
         //get all the classes
         Set<OWLClass> set=ontology.getClassesInSignature();
         
@@ -74,7 +110,12 @@ public class Structure2Cypher {
             Set <OWLClassExpression> subclasses = s.getSubClasses(ontology);
             if (!subclasses.isEmpty()){
                 for (OWLClassExpression exp:subclasses){
-                    cypher=cypher+shortName(exp.toString())+" isA "+superclass+"\n";
+                    String tempQuery = "MATCH (a {owl:\"class\", name:\""+
+                            superclass+"\"}),\n"
+                            + "(b {owl:\"class\", name:\""+shortName(exp.toString())+
+                            "\"})\n"
+                            + "MERGE (b)-[r:ISA]->(a)\n\n";
+                    superclassCypher=superclassCypher+tempQuery;
                 }
                 
             }
@@ -82,16 +123,19 @@ public class Structure2Cypher {
     }
     
     public void printCypher(){
-        System.out.println(cypher);
+        System.out.println(superclassCypher);
     }
     
-    public String getCypher(){
-        return cypher;
+    public String getSuperclassCypher(){
+        return superclassCypher;
     }
     
     public static String shortName(String owl2string){
         if (owl2string.contains("#")){
+            if(owl2string.contains(">")){
             return owl2string.substring(owl2string.indexOf("#")+1, owl2string.lastIndexOf(">"));
+            }
+            else return owl2string.substring(owl2string.indexOf("#")+1);
         }
         else return owl2string;
     }

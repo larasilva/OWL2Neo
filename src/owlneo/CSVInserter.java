@@ -29,6 +29,7 @@ public class CSVInserter {
     private int column;
     private String delimiter;
     private String literal;
+    private String idField;
 
     public CSVInserter(File filelocal) {
         line = 0;
@@ -69,6 +70,10 @@ public class CSVInserter {
             return false;
         }
 
+    }
+    
+    public void setIDField(String idField){
+        this.idField = idField;
     }
 
     // method that return a CSV line in the ArrayList <String> format
@@ -176,6 +181,27 @@ public class CSVInserter {
         String header;
         try {
             BufferedReader br = new BufferedReader(new FileReader(fileurl));
+            header = br.readLine();
+
+        } catch (FileNotFoundException ex) {
+            System.out.println("File not found.");
+            return null;
+        } catch (IOException ex) {
+            System.out.println("File has no readable header.");
+            return null;
+        }
+        ArrayList<String> headerList = new ArrayList();
+        String[] headerarray = header.split(delimiter);
+        //transforms the array into a arraylist
+        headerList.addAll(Arrays.asList(headerarray));
+
+        return headerList;
+    }
+    
+    public ArrayList<String> getHeader(File file) {
+        String header;
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
             header = br.readLine();
 
         } catch (FileNotFoundException ex) {

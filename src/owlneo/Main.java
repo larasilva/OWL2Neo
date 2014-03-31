@@ -3,9 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package owlneo;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -23,24 +26,23 @@ public class Main extends javax.swing.JFrame {
 
     MainSup support;
     /*final Vector delimiters;
-    final Vector literals;*/
+     final Vector literals;*/
+
     /**
      * Creates new form Main
      */
     public Main() {
         initComponents();
         /*delimiters = new Vector();
-        delimiters.add(";");
-        delimiters.add(",");
-        delimiters.add("tab");
-        delimiters.add("space");
-        literals = new Vector();
-        literals.add("\"");
-        literals.add("\'");*/
+         delimiters.add(";");
+         delimiters.add(",");
+         delimiters.add("tab");
+         delimiters.add("space");
+         literals = new Vector();
+         literals.add("\"");
+         literals.add("\'");*/
         support = new MainSup();
-        
-       
-        
+
     }
 
     /**
@@ -80,18 +82,34 @@ public class Main extends javax.swing.JFrame {
         CSVErrorDialog = new javax.swing.JDialog();
         jLabel3 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
+        saveTextAreaDialog = new javax.swing.JDialog();
+        textAreaSaveFileChooser = new javax.swing.JFileChooser();
+        CSVStep2Dialog = new javax.swing.JDialog();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        CSVheaderList = new javax.swing.JList();
+        CSVfieldSetupButton = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        CSVDialog2Cancel = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        labelCSV2Setup = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        mainCypherDisplay = new javax.swing.JTextArea();
+        SaveButton = new javax.swing.JButton();
+        clipboardButton = new javax.swing.JButton();
         mainBar = new javax.swing.JMenuBar();
         FileMenu = new javax.swing.JMenu();
         OpenOWLMenu = new javax.swing.JMenuItem();
         ReadCSVMenu = new javax.swing.JMenuItem();
         ExitMenu = new javax.swing.JMenuItem();
         EditMenu = new javax.swing.JMenu();
-        jMenuItem6 = new javax.swing.JMenuItem();
-        jMenuItem7 = new javax.swing.JMenuItem();
-        jMenuItem8 = new javax.swing.JMenuItem();
+        addIndividualMenuOption = new javax.swing.JMenuItem();
+        addClassMenuItem = new javax.swing.JMenuItem();
+        addInformationMenuOption = new javax.swing.JMenuItem();
         CypherMenu = new javax.swing.JMenu();
-        jMenuItem4 = new javax.swing.JMenuItem();
-        jMenuItem5 = new javax.swing.JMenuItem();
+        CreateCypherMenuOption = new javax.swing.JMenuItem();
+        CSVCypherMenuOption = new javax.swing.JMenuItem();
         HelpMenu = new javax.swing.JMenu();
         jMenuItem9 = new javax.swing.JMenuItem();
 
@@ -398,8 +416,131 @@ public class Main extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        saveTextAreaDialog.setMaximumSize(new java.awt.Dimension(725, 416));
+        saveTextAreaDialog.setMinimumSize(new java.awt.Dimension(725, 416));
+        saveTextAreaDialog.setResizable(false);
+
+        textAreaSaveFileChooser.setMaximumSize(new java.awt.Dimension(725, 370));
+        textAreaSaveFileChooser.setMinimumSize(new java.awt.Dimension(725, 370));
+        textAreaSaveFileChooser.setPreferredSize(new java.awt.Dimension(725, 370));
+        textAreaSaveFileChooser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textAreaSaveFileChooserActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout saveTextAreaDialogLayout = new javax.swing.GroupLayout(saveTextAreaDialog.getContentPane());
+        saveTextAreaDialog.getContentPane().setLayout(saveTextAreaDialogLayout);
+        saveTextAreaDialogLayout.setHorizontalGroup(
+            saveTextAreaDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(textAreaSaveFileChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 725, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+        saveTextAreaDialogLayout.setVerticalGroup(
+            saveTextAreaDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(saveTextAreaDialogLayout.createSequentialGroup()
+                .addComponent(textAreaSaveFileChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 46, Short.MAX_VALUE))
+        );
+
+        CSVStep2Dialog.setMinimumSize(new java.awt.Dimension(500, 400));
+        CSVStep2Dialog.setPreferredSize(new java.awt.Dimension(500, 400));
+
+        CSVheaderList.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane2.setViewportView(CSVheaderList);
+
+        CSVfieldSetupButton.setText("Setup Selected Field");
+
+        jButton4.setText("OK");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
+        CSVDialog2Cancel.setText("Cancel");
+        CSVDialog2Cancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CSVDialog2CancelActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setText("Number of fields lacking setup:");
+
+        labelCSV2Setup.setText("jLabel5");
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane3.setViewportView(jTextArea1);
+
+        javax.swing.GroupLayout CSVStep2DialogLayout = new javax.swing.GroupLayout(CSVStep2Dialog.getContentPane());
+        CSVStep2Dialog.getContentPane().setLayout(CSVStep2DialogLayout);
+        CSVStep2DialogLayout.setHorizontalGroup(
+            CSVStep2DialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(CSVStep2DialogLayout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addGroup(CSVStep2DialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(CSVStep2DialogLayout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addGap(3, 3, 3)
+                        .addComponent(labelCSV2Setup)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(CSVDialog2Cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(CSVStep2DialogLayout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane3))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CSVStep2DialogLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(CSVfieldSetupButton, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        CSVStep2DialogLayout.setVerticalGroup(
+            CSVStep2DialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(CSVStep2DialogLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(CSVStep2DialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(CSVStep2DialogLayout.createSequentialGroup()
+                        .addComponent(CSVfieldSetupButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addGroup(CSVStep2DialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton4)
+                    .addComponent(CSVDialog2Cancel)
+                    .addComponent(jLabel4)
+                    .addComponent(labelCSV2Setup))
+                .addContainerGap())
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("OWL2Neo");
+
+        mainCypherDisplay.setEditable(false);
+        mainCypherDisplay.setColumns(20);
+        mainCypherDisplay.setRows(5);
+        mainCypherDisplay.setWrapStyleWord(true);
+        jScrollPane1.setViewportView(mainCypherDisplay);
+
+        SaveButton.setText("Save Output");
+        SaveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SaveButtonActionPerformed(evt);
+            }
+        });
+
+        clipboardButton.setText("Copy to Clipboard");
+        clipboardButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clipboardButtonActionPerformed(evt);
+            }
+        });
 
         FileMenu.setText("File");
 
@@ -432,34 +573,39 @@ public class Main extends javax.swing.JFrame {
 
         EditMenu.setText("Edit");
 
-        jMenuItem6.setText("Add Individual");
-        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+        addIndividualMenuOption.setText("Add Individual");
+        addIndividualMenuOption.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem6ActionPerformed(evt);
+                addIndividualMenuOptionActionPerformed(evt);
             }
         });
-        EditMenu.add(jMenuItem6);
+        EditMenu.add(addIndividualMenuOption);
 
-        jMenuItem7.setText("Add Class");
-        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
+        addClassMenuItem.setText("Add Class");
+        addClassMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem7ActionPerformed(evt);
+                addClassMenuItemActionPerformed(evt);
             }
         });
-        EditMenu.add(jMenuItem7);
+        EditMenu.add(addClassMenuItem);
 
-        jMenuItem8.setText("Add Information");
-        EditMenu.add(jMenuItem8);
+        addInformationMenuOption.setText("Add Information");
+        EditMenu.add(addInformationMenuOption);
 
         mainBar.add(EditMenu);
 
         CypherMenu.setText("Cypher Queries");
 
-        jMenuItem4.setText("Get ontology create script");
-        CypherMenu.add(jMenuItem4);
+        CreateCypherMenuOption.setText("Get ontology create script");
+        CreateCypherMenuOption.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CreateCypherMenuOptionActionPerformed(evt);
+            }
+        });
+        CypherMenu.add(CreateCypherMenuOption);
 
-        jMenuItem5.setText("Get populating queries");
-        CypherMenu.add(jMenuItem5);
+        CSVCypherMenuOption.setText("Get populating queries");
+        CypherMenu.add(CSVCypherMenuOption);
 
         mainBar.add(CypherMenu);
 
@@ -482,23 +628,39 @@ public class Main extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 700, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(clipboardButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(SaveButton)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 539, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(54, 54, 54)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 443, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(SaveButton)
+                    .addComponent(clipboardButton))
+                .addGap(6, 6, 6))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+    private void addIndividualMenuOptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addIndividualMenuOptionActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem6ActionPerformed
+    }//GEN-LAST:event_addIndividualMenuOptionActionPerformed
 
-    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
+    private void addClassMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addClassMenuItemActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem7ActionPerformed
+    }//GEN-LAST:event_addClassMenuItemActionPerformed
 
     private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
         // TODO add your handling code here:
@@ -514,16 +676,15 @@ public class Main extends javax.swing.JFrame {
 
     private void OWLFileChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OWLFileChooserActionPerformed
         // TODO add your handling code here:
-        if (evt.getActionCommand().equals("CancelSelection")){
+        if (evt.getActionCommand().equals("CancelSelection")) {
             OWLFileDialog.setVisible(false);
-            
-        }
-        else{
+
+        } else {
             boolean success = support.setupOWL(OWLFileChooser.getSelectedFile());
-            if (!success){
+            if (!success) {
                 OWLError.setVisible(true);
-            }
-            else{
+                OWLError.toFront();
+            } else {
                 System.out.println(OWLFileChooser.getSelectedFile().getName());
                 OWLFileDialog.setVisible(false);
             }
@@ -548,10 +709,10 @@ public class Main extends javax.swing.JFrame {
 
     private void CSVFileChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CSVFileChooserActionPerformed
         // TODO add your handling code here:
-        if (evt.getActionCommand().equals("CancelSelection")){
+        if (evt.getActionCommand().equals("CancelSelection")) {
             CSVFileChooserDialog.setVisible(false);
         }
-        if (evt.getActionCommand().equals("ApproveSelection")){
+        if (evt.getActionCommand().equals("ApproveSelection")) {
             File csvFile = CSVFileChooser.getSelectedFile();
             Path filepath = Paths.get(csvFile.getPath());
             boolean righttype = false;
@@ -561,19 +722,20 @@ public class Main extends javax.swing.JFrame {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
                 righttype = false;
             }
-            
+
             boolean CSVsuccess = support.setupCSV(csvFile);
             //verifies if the class was created with success and closes the
             //filechooser dialog window
-            
-            if (CSVsuccess && righttype){
+
+            if (CSVsuccess && righttype) {
                 CSVFileChooserDialog.setVisible(false);
-            }
-            else {
+                CSVStep2Dialog.setVisible(true);
+                //sets the label to show the number of fields left
+                labelCSV2Setup.setText(support.numberOfFieldsLeft());
+            } else {
                 CSVErrorDialog.setVisible(true);
             }
-            
-                
+
         }
     }//GEN-LAST:event_CSVFileChooserActionPerformed
 
@@ -584,7 +746,7 @@ public class Main extends javax.swing.JFrame {
 
     private void CSVSemicolonOptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CSVSemicolonOptionActionPerformed
         // TODO add your handling code here:
-        if (CSVSemicolonOption.isSelected()){
+        if (CSVSemicolonOption.isSelected()) {
             support.setupCSVDelim(";");
         }
         System.out.println(support.getCSVDelim());
@@ -592,8 +754,8 @@ public class Main extends javax.swing.JFrame {
 
     private void CSVCommaOptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CSVCommaOptionActionPerformed
         // TODO add your handling code here:
-        if (CSVCommaOption.isSelected()){
-            support.setupCSVDelim(",");           
+        if (CSVCommaOption.isSelected()) {
+            support.setupCSVDelim(",");
         }
         System.out.println(support.getCSVDelim());
     }//GEN-LAST:event_CSVCommaOptionActionPerformed
@@ -604,12 +766,12 @@ public class Main extends javax.swing.JFrame {
 
     private void CSVLitNoQuoteOptionMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CSVLitNoQuoteOptionMouseEntered
         // TODO add your handling code here:
-        
+
     }//GEN-LAST:event_CSVLitNoQuoteOptionMouseEntered
 
     private void CSVTabOptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CSVTabOptionActionPerformed
         // TODO add your handling code here:
-        if (CSVTabOption.isSelected()){
+        if (CSVTabOption.isSelected()) {
             support.setupCSVDelim("\t");
         }
         System.out.println(support.getCSVDelim());
@@ -617,7 +779,7 @@ public class Main extends javax.swing.JFrame {
 
     private void CSVSpaceOptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CSVSpaceOptionActionPerformed
         // TODO add your handling code here:
-        if (CSVSpaceOption.isSelected()){
+        if (CSVSpaceOption.isSelected()) {
             support.setupCSVDelim(" ");
         }
         System.out.println(support.getCSVDelim());
@@ -627,6 +789,54 @@ public class Main extends javax.swing.JFrame {
         // TODO add your handling code here:
         CSVErrorDialog.setVisible(false);
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void CreateCypherMenuOptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreateCypherMenuOptionActionPerformed
+        // Clears the field whenever this option is called
+        mainCypherDisplay.setText("");
+        mainCypherDisplay.append(support.getOWLCreateCypher());
+        if (support.isOWLSetup()) {
+            mainCypherDisplay.append("------------------------------\n\n");
+            mainCypherDisplay.append(support.getOWLSuperclassCypher());
+            mainCypherDisplay.append("------------------------------\n\n");
+            mainCypherDisplay.append(support.getAnnotationsCypher());
+        }
+    }//GEN-LAST:event_CreateCypherMenuOptionActionPerformed
+
+    private void SaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveButtonActionPerformed
+        //TODO inserir janela para save file e metodo para guardar o ficheiro
+        //atencao ao \n que tem de ser trabalhado para funcionar em todas as plataformas
+        saveTextAreaDialog.setVisible(true);
+        saveTextAreaDialog.toFront();
+
+
+    }//GEN-LAST:event_SaveButtonActionPerformed
+
+    private void clipboardButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clipboardButtonActionPerformed
+        StringSelection select = new StringSelection(mainCypherDisplay.getText());
+        Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clpbrd.setContents(select, null);
+    }//GEN-LAST:event_clipboardButtonActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void CSVDialog2CancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CSVDialog2CancelActionPerformed
+        CSVStep2Dialog.setVisible(false);
+    }//GEN-LAST:event_CSVDialog2CancelActionPerformed
+
+    private void textAreaSaveFileChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textAreaSaveFileChooserActionPerformed
+        if (evt.getActionCommand().equals("CancelSelection")) {
+            saveTextAreaDialog.setVisible(false);
+        }
+        if (evt.getActionCommand().equals("ApproveSelection")) {
+            support.saveAsCypherScript(textAreaSaveFileChooser.getSelectedFile(),
+                    mainCypherDisplay.getText());
+            System.out.println(textAreaSaveFileChooser.getSelectedFile().
+                    getAbsolutePath()+" file saved");
+            saveTextAreaDialog.setVisible(false);
+        }
+    }//GEN-LAST:event_textAreaSaveFileChooserActionPerformed
 
     /**
      * @param args the command line arguments
@@ -666,6 +876,8 @@ public class Main extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDialog AboutDialog;
     private javax.swing.JRadioButton CSVCommaOption;
+    private javax.swing.JMenuItem CSVCypherMenuOption;
+    private javax.swing.JButton CSVDialog2Cancel;
     private javax.swing.JDialog CSVErrorDialog;
     private javax.swing.JFileChooser CSVFileChooser;
     private javax.swing.JDialog CSVFileChooserDialog;
@@ -674,7 +886,11 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JRadioButton CSVLitSingleQuoteOption;
     private javax.swing.JRadioButton CSVSemicolonOption;
     private javax.swing.JRadioButton CSVSpaceOption;
+    private javax.swing.JDialog CSVStep2Dialog;
     private javax.swing.JRadioButton CSVTabOption;
+    private javax.swing.JButton CSVfieldSetupButton;
+    private javax.swing.JList CSVheaderList;
+    private javax.swing.JMenuItem CreateCypherMenuOption;
     private javax.swing.JMenu CypherMenu;
     private javax.swing.ButtonGroup DelimGrp;
     private javax.swing.JLabel DelimLabel;
@@ -689,22 +905,32 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JDialog OWLFileDialog;
     private javax.swing.JMenuItem OpenOWLMenu;
     private javax.swing.JMenuItem ReadCSVMenu;
+    private javax.swing.JButton SaveButton;
     private java.awt.Button aboutClose;
+    private javax.swing.JMenuItem addClassMenuItem;
+    private javax.swing.JMenuItem addIndividualMenuOption;
+    private javax.swing.JMenuItem addInformationMenuOption;
+    private javax.swing.JButton clipboardButton;
     private java.awt.Label emailAbout;
     private javax.swing.JDialog individualDialog;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton4;
     private javax.swing.JFrame jFrame1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JMenuItem jMenuItem6;
-    private javax.swing.JMenuItem jMenuItem7;
-    private javax.swing.JMenuItem jMenuItem8;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JMenuItem jMenuItem9;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JLabel labelCSV2Setup;
     private javax.swing.JMenuBar mainBar;
+    private javax.swing.JTextArea mainCypherDisplay;
+    private javax.swing.JDialog saveTextAreaDialog;
+    private javax.swing.JFileChooser textAreaSaveFileChooser;
     // End of variables declaration//GEN-END:variables
 }
