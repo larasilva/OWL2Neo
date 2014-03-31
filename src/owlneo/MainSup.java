@@ -11,10 +11,14 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.semanticweb.HermiT.Reasoner;
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.AxiomType;
+import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
@@ -141,6 +145,22 @@ public class MainSup {
             return success;
         }
         return success;
+    }
+    
+    private HashMap<String, OWLClass> generateTreeStrings(){
+        Set<OWLClass> set=ontology.getClassesInSignature();
+        HashMap<String, OWLClass> result = new HashMap();
+        
+        
+        return result;
+    }
+    
+    
+    
+    //TODO
+    public void setupField(){
+        
+        
     }
     
 }
