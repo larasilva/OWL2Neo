@@ -78,6 +78,13 @@ public class MainSup {
         reasoner = new Reasoner.ReasonerFactory().createReasoner(ontology);
         structure = new Structure2Cypher(manager, ontology, reasoner);
         
+        //test
+        ClassHashCreator chc = new ClassHashCreator(ontology);
+        HashMap <String, OWLClass> hash = chc.getHash();
+        for (String s:hash.keySet()){
+            System.out.println(s);
+        }
+        
         
         OWLInicialized = true;
         
