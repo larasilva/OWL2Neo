@@ -81,9 +81,6 @@ public class MainSup {
         //test
         ClassHashCreator chc = new ClassHashCreator(ontology);
         HashMap <String, OWLClass> hash = chc.getHash();
-        for (String s:hash.keySet()){
-            System.out.println(s);
-        }
         
         
         OWLInicialized = true;
