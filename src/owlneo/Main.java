@@ -685,7 +685,6 @@ public class Main extends javax.swing.JFrame {
                 OWLError.setVisible(true);
                 OWLError.toFront();
             } else {
-                System.out.println(OWLFileChooser.getSelectedFile().getName());
                 OWLFileDialog.setVisible(false);
             }
         }
