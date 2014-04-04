@@ -48,12 +48,14 @@ public class MainSup {
     private CSVInserter CSVinserter;
     private Structure2Cypher structure;
     private int numberCSVfields;
+    private ArrayList<String> headerList;
 
     public MainSup() {
         CSVInicialized = false;
         OWLInicialized = false;
         CSVdelim = ";";
         CSVliteral = "\"";
+        headerList = new ArrayList();
     }
 
     public void setupCSVDelim(String delim) {
@@ -206,7 +208,16 @@ public class MainSup {
     }
 
     public ArrayList<String> getCSVHeader() {
-        return CSVinserter.getHeader(CSVFile);
+        return headerList;
+    }
+    
+    public String[] getCSVHeaderArray() {
+        
+        String[]result=new String[headerList.size()];
+        for (int i=0; i<result.length; i++){
+            result[i]=headerList.get(i);
+        }
+        return result;
     }
 
     public String numberOfFieldsLeft() {
@@ -216,7 +227,8 @@ public class MainSup {
     public boolean setupCSV(File file) {
         CSVinserter = new CSVInserter(file, CSVdelim, CSVliteral);
         CSVInicialized = true;
-        numberCSVfields = CSVinserter.getHeader(file).size();
+        headerList=CSVinserter.getHeader(file);
+        numberCSVfields = headerList.size();
         return CSVInicialized;
     }
 
