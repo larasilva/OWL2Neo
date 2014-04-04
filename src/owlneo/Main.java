@@ -33,14 +33,6 @@ public class Main extends javax.swing.JFrame {
      */
     public Main() {
         initComponents();
-        /*delimiters = new Vector();
-         delimiters.add(";");
-         delimiters.add(",");
-         delimiters.add("tab");
-         delimiters.add("space");
-         literals = new Vector();
-         literals.add("\"");
-         literals.add("\'");*/
         support = new MainSup();
 
     }
@@ -53,6 +45,7 @@ public class Main extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         jFrame1 = new javax.swing.JFrame();
         individualDialog = new javax.swing.JDialog();
@@ -94,10 +87,12 @@ public class Main extends javax.swing.JFrame {
         labelCSV2Setup = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        mainCypherDisplay = new javax.swing.JTextArea();
         SaveButton = new javax.swing.JButton();
         clipboardButton = new javax.swing.JButton();
+        MainTabbedPane = new javax.swing.JTabbedPane();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        mainCypherDisplay = new javax.swing.JTextArea();
+        jTabbedPane2 = new javax.swing.JTabbedPane();
         mainBar = new javax.swing.JMenuBar();
         FileMenu = new javax.swing.JMenu();
         OpenOWLMenu = new javax.swing.JMenuItem();
@@ -416,7 +411,6 @@ public class Main extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        saveTextAreaDialog.setMaximumSize(new java.awt.Dimension(725, 416));
         saveTextAreaDialog.setMinimumSize(new java.awt.Dimension(725, 416));
         saveTextAreaDialog.setResizable(false);
 
@@ -450,6 +444,12 @@ public class Main extends javax.swing.JFrame {
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
+
+        org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${}");
+        org.jdesktop.swingbinding.JListBinding jListBinding = org.jdesktop.swingbinding.SwingBindings.createJListBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, LitGrp, eLProperty, CSVheaderList);
+        jListBinding.setDetailBinding(org.jdesktop.beansbinding.ELProperty.create("${}"));
+        bindingGroup.addBinding(jListBinding);
+
         jScrollPane2.setViewportView(CSVheaderList);
 
         CSVfieldSetupButton.setText("Setup Selected Field");
@@ -522,12 +522,6 @@ public class Main extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("OWL2Neo");
 
-        mainCypherDisplay.setEditable(false);
-        mainCypherDisplay.setColumns(20);
-        mainCypherDisplay.setRows(5);
-        mainCypherDisplay.setWrapStyleWord(true);
-        jScrollPane1.setViewportView(mainCypherDisplay);
-
         SaveButton.setText("Save Output");
         SaveButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -541,6 +535,15 @@ public class Main extends javax.swing.JFrame {
                 clipboardButtonActionPerformed(evt);
             }
         });
+
+        mainCypherDisplay.setEditable(false);
+        mainCypherDisplay.setColumns(20);
+        mainCypherDisplay.setRows(5);
+        mainCypherDisplay.setWrapStyleWord(true);
+        jScrollPane1.setViewportView(mainCypherDisplay);
+
+        MainTabbedPane.addTab("CypherQueries", jScrollPane1);
+        MainTabbedPane.addTab("Tree Visualization", jTabbedPane2);
 
         FileMenu.setText("File");
 
@@ -628,28 +631,24 @@ public class Main extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(clipboardButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(SaveButton)))
-                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(clipboardButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(SaveButton))
+            .addComponent(MainTabbedPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 941, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(54, 54, 54)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 443, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(MainTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 549, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(SaveButton)
                     .addComponent(clipboardButton))
                 .addGap(6, 6, 6))
         );
+
+        bindingGroup.bind();
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -761,10 +760,18 @@ public class Main extends javax.swing.JFrame {
 
     private void CSVLitDoubleQuoteOptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CSVLitDoubleQuoteOptionActionPerformed
         // TODO add your handling code here:
+        if (CSVLitDoubleQuoteOption.isSelected()) {
+            support.setupCSVLiteral("\"");
+        }
+        System.out.println(support.getCSVLiteral());
     }//GEN-LAST:event_CSVLitDoubleQuoteOptionActionPerformed
 
     private void CSVLitNoQuoteOptionMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CSVLitNoQuoteOptionMouseEntered
         // TODO add your handling code here:
+        if (CSVLitNoQuoteOption.isSelected()) {
+            support.setupCSVLiteral(" ");
+        }
+        System.out.println("*"+support.getCSVLiteral()+"*");
 
     }//GEN-LAST:event_CSVLitNoQuoteOptionMouseEntered
 
@@ -899,6 +906,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenu HelpMenu;
     private javax.swing.ButtonGroup LitGrp;
     private javax.swing.JLabel Litlabel;
+    private javax.swing.JTabbedPane MainTabbedPane;
     private javax.swing.JDialog OWLError;
     private javax.swing.JFileChooser OWLFileChooser;
     private javax.swing.JDialog OWLFileDialog;
@@ -925,11 +933,13 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JLabel labelCSV2Setup;
     private javax.swing.JMenuBar mainBar;
     private javax.swing.JTextArea mainCypherDisplay;
     private javax.swing.JDialog saveTextAreaDialog;
     private javax.swing.JFileChooser textAreaSaveFileChooser;
+    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }
