@@ -201,8 +201,10 @@ public class CSVInserter {
     public ArrayList<String> getHeader(File file) {
         String header;
         try {
+            
             BufferedReader br = new BufferedReader(new FileReader(file));
             header = br.readLine();
+            br.close();
 
         } catch (FileNotFoundException ex) {
             System.out.println("File not found.");
@@ -212,9 +214,14 @@ public class CSVInserter {
             return null;
         }
         ArrayList<String> headerList = new ArrayList();
+
         String[] headerarray = header.split(delimiter);
-        //transforms the array into a arraylist
         headerList.addAll(Arrays.asList(headerarray));
+        System.out.println(headerList.size());
+        for (String foo:headerList){
+            System.out.println(foo);
+        }
+        System.out.println("headerlist to return");
 
         return headerList;
     }
