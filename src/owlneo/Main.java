@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,6 +26,7 @@ import java.util.logging.Logger;
 public class Main extends javax.swing.JFrame {
 
     MainSup support;
+    String [] headerFields;
     /*final Vector delimiters;
      final Vector literals;*/
 
@@ -45,7 +47,6 @@ public class Main extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         jFrame1 = new javax.swing.JFrame();
         individualDialog = new javax.swing.JDialog();
@@ -440,16 +441,11 @@ public class Main extends javax.swing.JFrame {
         CSVStep2Dialog.setPreferredSize(new java.awt.Dimension(500, 400));
 
         CSVheaderList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            String[] strings = new String[headerFields.length];
+            strings = headerFields[];
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
-
-        org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${}");
-        org.jdesktop.swingbinding.JListBinding jListBinding = org.jdesktop.swingbinding.SwingBindings.createJListBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, LitGrp, eLProperty, CSVheaderList);
-        jListBinding.setDetailBinding(org.jdesktop.beansbinding.ELProperty.create("${}"));
-        bindingGroup.addBinding(jListBinding);
-
         jScrollPane2.setViewportView(CSVheaderList);
 
         CSVfieldSetupButton.setText("Setup Selected Field");
@@ -648,8 +644,6 @@ public class Main extends javax.swing.JFrame {
                 .addGap(6, 6, 6))
         );
 
-        bindingGroup.bind();
-
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -727,6 +721,12 @@ public class Main extends javax.swing.JFrame {
 
             if (CSVsuccess && righttype) {
                 CSVFileChooserDialog.setVisible(false);
+                System.out.println("main pre call");
+                int headersize = support.getCSVHeaderArray().length;
+                System.out.println(headersize);
+                headerFields = new String [headersize];
+                headerFields = support.getCSVHeaderArray();
+                System.out.println("main post call");
                 CSVStep2Dialog.setVisible(true);
                 //sets the label to show the number of fields left
                 labelCSV2Setup.setText(support.numberOfFieldsLeft());
@@ -940,6 +940,5 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JTextArea mainCypherDisplay;
     private javax.swing.JDialog saveTextAreaDialog;
     private javax.swing.JFileChooser textAreaSaveFileChooser;
-    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }
