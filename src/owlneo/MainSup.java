@@ -50,12 +50,14 @@ public class MainSup {
     private int numberCSVfields;
     private ArrayList<String> headerList;
 
+
     public MainSup() {
         CSVInicialized = false;
         OWLInicialized = false;
         CSVdelim = ";";
         CSVliteral = "\"";
         headerList = new ArrayList();
+
     }
 
     public void setupCSVDelim(String delim) {
@@ -90,17 +92,17 @@ public class MainSup {
         //test
         ClassHashCreator chc = new ClassHashCreator(ontology);
         HashMap<String, OWLClass> hash = chc.getHash();
-        HashMap <String, ObjectProperty2String> OPtester
+        HashMap<String, ObjectProperty2String> OPtester
                 = getObjectPropertyHashMap();
-        for(String s: OPtester.keySet()){
+        for (String s : OPtester.keySet()) {
             System.out.println(s);
         }
         OWLInicialized = true;
 
         HashMap<String, OWLDataProperty> test = getDataPropertyList();
         /*for (String s : test.keySet()) {
-            System.out.println(s);
-        }*/
+         System.out.println(s);
+         }*/
 
         return OWLInicialized;
     }
@@ -145,8 +147,8 @@ public class MainSup {
         HashMap<String, OWLDataProperty> result = new HashMap();
         for (OWLDataProperty dp : dataPropSet) {
             String temp = dp.toStringID();
-            temp = temp.substring(temp.indexOf("#")+1);
-            
+            temp = temp.substring(temp.indexOf("#") + 1);
+
             for (OWLDataRange dr : dp.getRanges(ontology)) {
                 System.out.println(temp + " = " + getDataPropertyRange(dp));
             }
@@ -159,13 +161,13 @@ public class MainSup {
     }
 
     /**
-     * Method that returns a String representation of the values accepted by
-     * the data property, return an empty String if the DataProperty has no
-     * range declared
+     * Method that returns a String representation of the values accepted by the
+     * data property, return an empty String if the DataProperty has no range
+     * declared
+     *
      * @param dataProperty
      * @return String representation of the values accepted by the data property
      */
-    
     public String getDataPropertyRange(OWLDataProperty dataProperty) {
         String result = "";
         for (OWLDataRange dr : dataProperty.getRanges(ontology)) {
@@ -174,32 +176,32 @@ public class MainSup {
                 String drString = dr.toString();
                 result = "\n" + result + drString.substring(drString.indexOf(":") + 1);
             }
-            if(dr.getDataRangeType()==DataRangeType.DATA_ONE_OF){
+            if (dr.getDataRangeType() == DataRangeType.DATA_ONE_OF) {
                 String drString = dr.toString();
-                drString = drString.substring(drString.indexOf("(")+1,
-                        drString.indexOf(")")-1);
+                drString = drString.substring(drString.indexOf("(") + 1,
+                        drString.indexOf(")") - 1);
                 //replaces all the spaces between double quotes with commas, 
                 //keeping the double quotes
                 result = "\n" + result + drString.replace("\" \"", "\",\"");
             }
-            
+
         }
         if (result.length() > 0) {
             result = result.substring(1);
         }
         return result;
     }
-    
-    public HashMap <String, ObjectProperty2String> getObjectPropertyHashMap(){
-        HashMap <String, ObjectProperty2String> result = new HashMap();
-        Set<OWLObjectProperty> objectProperties = 
-                ontology.getObjectPropertiesInSignature();
-        for (OWLObjectProperty op: objectProperties){
-            
+
+    public HashMap<String, ObjectProperty2String> getObjectPropertyHashMap() {
+        HashMap<String, ObjectProperty2String> result = new HashMap();
+        Set<OWLObjectProperty> objectProperties
+                = ontology.getObjectPropertiesInSignature();
+        for (OWLObjectProperty op : objectProperties) {
+
             result.put(Structure2Cypher.shortName(op.toStringID()),
                     new ObjectProperty2String(ontology, op));
         }
-        
+
         return result;
     }
 
@@ -210,12 +212,12 @@ public class MainSup {
     public ArrayList<String> getCSVHeader() {
         return headerList;
     }
-    
+
     public String[] getCSVHeaderArray() {
-        
-        String[]result=new String[headerList.size()];
-        for (int i=0; i<result.length; i++){
-            result[i]=headerList.get(i);
+
+        String[] result = new String[headerList.size()];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = headerList.get(i);
         }
         return result;
     }
@@ -227,7 +229,7 @@ public class MainSup {
     public boolean setupCSV(File file) {
         CSVinserter = new CSVInserter(file, CSVdelim, CSVliteral);
         CSVInicialized = true;
-        headerList=CSVinserter.getHeader(file);
+        headerList = CSVinserter.getHeader(file);
         numberCSVfields = headerList.size();
         return CSVInicialized;
     }
@@ -252,10 +254,29 @@ public class MainSup {
 
         return result;
     }
+    
+    public String getCSVFieldSummary(String header){
+        return CSVinserter.getFieldSummary(header);
+    }
 
     //TODO
-    public void setupField() {
+    
+    public void setupField(String header) {
+        
 
+    }
+    
+    public String getCSVColumnUniques(String header){
+        int index=0;
+        String temp = headerList.get(index);
+        while (!header.equalsIgnoreCase(temp)){
+            index++;
+        }
+        String result="";
+        for(String s:CSVInserter.getUniques(CSVinserter.getColumnAtIndex(index))){
+            result = result + s +"\n";
+        }
+        return result;
     }
 
 }
