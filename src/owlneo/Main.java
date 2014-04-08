@@ -15,9 +15,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
+import javax.swing.ListModel;
+import org.semanticweb.owlapi.model.OWLDataProperty;
 
 /**
  *
@@ -25,17 +31,25 @@ import java.util.logging.Logger;
  */
 public class Main extends javax.swing.JFrame {
 
-    MainSup support;
-    String [] headerFields;
+    private MainSup support;
+    private String [] headerFields;
+    private DefaultListModel dlm;
+    private DefaultComboBoxModel dpComboModel;
+    private String headerSelected;
     /*final Vector delimiters;
      final Vector literals;*/
+    
 
     /**
      * Creates new form Main
      */
     public Main() {
-        initComponents();
         support = new MainSup();
+        dlm = new DefaultListModel();
+        dpComboModel = new DefaultComboBoxModel();
+        initComponents();
+        
+        
 
     }
 
@@ -80,14 +94,23 @@ public class Main extends javax.swing.JFrame {
         textAreaSaveFileChooser = new javax.swing.JFileChooser();
         CSVStep2Dialog = new javax.swing.JDialog();
         jScrollPane2 = new javax.swing.JScrollPane();
-        CSVheaderList = new javax.swing.JList();
+        CSVheaderList = new javax.swing.JList(dlm);
         CSVfieldSetupButton = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        CSVDialog2Cancel = new javax.swing.JButton();
-        jLabel4 = new javax.swing.JLabel();
+        CSVStep2OK = new javax.swing.JButton();
+        CSVStep2Cancel = new javax.swing.JButton();
+        csv2PermanentLabel = new javax.swing.JLabel();
         labelCSV2Setup = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        CSVstep2FieldSummary = new javax.swing.JTextArea();
+        CSVfieldSetupButton1 = new javax.swing.JButton();
+        CSVStep3Data = new javax.swing.JDialog();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        dataPropValuePane = new javax.swing.JTextArea();
+        dataPropStaticLabel = new javax.swing.JLabel();
+        dataPropOKBtn = new javax.swing.JButton();
+        dataPropCancBtn = new javax.swing.JButton();
+        jComboBox1 = new javax.swing.JComboBox();
+        jLabel4 = new javax.swing.JLabel();
         SaveButton = new javax.swing.JButton();
         clipboardButton = new javax.swing.JButton();
         MainTabbedPane = new javax.swing.JTabbedPane();
@@ -440,37 +463,50 @@ public class Main extends javax.swing.JFrame {
         CSVStep2Dialog.setMinimumSize(new java.awt.Dimension(500, 400));
         CSVStep2Dialog.setPreferredSize(new java.awt.Dimension(500, 400));
 
-        CSVheaderList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = new String[headerFields.length];
-            strings = headerFields[];
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
+        CSVheaderList.setSelectedIndex(0);
+        CSVheaderList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                CSVheaderListValueChanged(evt);
+            }
         });
         jScrollPane2.setViewportView(CSVheaderList);
 
-        CSVfieldSetupButton.setText("Setup Selected Field");
-
-        jButton4.setText("OK");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        CSVfieldSetupButton.setText("Setup Field as Data Property");
+        CSVfieldSetupButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                CSVfieldSetupButtonActionPerformed(evt);
             }
         });
 
-        CSVDialog2Cancel.setText("Cancel");
-        CSVDialog2Cancel.addActionListener(new java.awt.event.ActionListener() {
+        CSVStep2OK.setText("OK");
+        CSVStep2OK.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CSVDialog2CancelActionPerformed(evt);
+                CSVStep2OKActionPerformed(evt);
             }
         });
 
-        jLabel4.setText("Number of fields lacking setup:");
+        CSVStep2Cancel.setText("Cancel");
+        CSVStep2Cancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CSVStep2CancelActionPerformed(evt);
+            }
+        });
+
+        csv2PermanentLabel.setText("Number of fields lacking setup:");
 
         labelCSV2Setup.setText("jLabel5");
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane3.setViewportView(jTextArea1);
+        CSVstep2FieldSummary.setEditable(false);
+        CSVstep2FieldSummary.setColumns(20);
+        CSVstep2FieldSummary.setRows(5);
+        jScrollPane3.setViewportView(CSVstep2FieldSummary);
+
+        CSVfieldSetupButton1.setText("Setup Field as Object Property");
+        CSVfieldSetupButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CSVfieldSetupButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout CSVStep2DialogLayout = new javax.swing.GroupLayout(CSVStep2Dialog.getContentPane());
         CSVStep2Dialog.getContentPane().setLayout(CSVStep2DialogLayout);
@@ -480,38 +516,113 @@ public class Main extends javax.swing.JFrame {
                 .addGap(21, 21, 21)
                 .addGroup(CSVStep2DialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(CSVStep2DialogLayout.createSequentialGroup()
-                        .addComponent(jLabel4)
+                        .addComponent(csv2PermanentLabel)
                         .addGap(3, 3, 3)
                         .addComponent(labelCSV2Setup)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(CSVDialog2Cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(CSVStep2Cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(CSVStep2OK, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(CSVStep2DialogLayout.createSequentialGroup()
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPane3))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CSVStep2DialogLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(CSVfieldSetupButton, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(CSVStep2DialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane3)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CSVStep2DialogLayout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addGroup(CSVStep2DialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(CSVfieldSetupButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(CSVfieldSetupButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                 .addContainerGap())
         );
         CSVStep2DialogLayout.setVerticalGroup(
             CSVStep2DialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(CSVStep2DialogLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addGroup(CSVStep2DialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(19, 19, 19)
+                .addGroup(CSVStep2DialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(CSVStep2DialogLayout.createSequentialGroup()
+                        .addComponent(CSVfieldSetupButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(CSVfieldSetupButton)
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addGroup(CSVStep2DialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton4)
-                    .addComponent(CSVDialog2Cancel)
-                    .addComponent(jLabel4)
+                    .addComponent(CSVStep2OK)
+                    .addComponent(CSVStep2Cancel)
+                    .addComponent(csv2PermanentLabel)
                     .addComponent(labelCSV2Setup))
+                .addContainerGap())
+        );
+
+        CSVStep3Data.setTitle("Setup as Data Property");
+        CSVStep3Data.setMaximumSize(null);
+        CSVStep3Data.setMinimumSize(new java.awt.Dimension(300, 440));
+        CSVStep3Data.setModal(true);
+        CSVStep3Data.setResizable(false);
+
+        dataPropValuePane.setColumns(20);
+        dataPropValuePane.setRows(5);
+        jScrollPane5.setViewportView(dataPropValuePane);
+
+        dataPropStaticLabel.setText("Unique Values:");
+
+        dataPropOKBtn.setText("OK");
+
+        dataPropCancBtn.setText("Cancel");
+        dataPropCancBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dataPropCancBtnActionPerformed(evt);
+            }
+        });
+
+        jComboBox1.setModel(dpComboModel);
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setText("Data Property:");
+
+        javax.swing.GroupLayout CSVStep3DataLayout = new javax.swing.GroupLayout(CSVStep3Data.getContentPane());
+        CSVStep3Data.getContentPane().setLayout(CSVStep3DataLayout);
+        CSVStep3DataLayout.setHorizontalGroup(
+            CSVStep3DataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(CSVStep3DataLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(CSVStep3DataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(CSVStep3DataLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(dataPropCancBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(dataPropOKBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(CSVStep3DataLayout.createSequentialGroup()
+                        .addGroup(CSVStep3DataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(CSVStep3DataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(dataPropStaticLabel, javax.swing.GroupLayout.Alignment.LEADING))
+                            .addComponent(jLabel4))
+                        .addGap(0, 26, Short.MAX_VALUE))))
+        );
+        CSVStep3DataLayout.setVerticalGroup(
+            CSVStep3DataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(CSVStep3DataLayout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addComponent(dataPropStaticLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(33, 33, 33)
+                .addGroup(CSVStep3DataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(dataPropOKBtn)
+                    .addComponent(dataPropCancBtn))
                 .addContainerGap())
         );
 
@@ -647,6 +758,26 @@ public class Main extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void setListModel() {
+
+        for (String s : support.getCSVHeader()) {
+            dlm.addElement(s);
+        }
+        if (dlm.isEmpty()) {
+            dlm.addElement("Error");
+        }
+    }
+    
+    private void setDataComboModel(){
+        HashMap <String, OWLDataProperty> temp = support.getDataPropertyList();
+        for (String s: temp.keySet()){
+            dpComboModel.addElement(s);
+        }
+        if (dpComboModel.getSize()==0){
+            dpComboModel.addElement("Error");
+        }
+    }
+    
     private void addIndividualMenuOptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addIndividualMenuOptionActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_addIndividualMenuOptionActionPerformed
@@ -721,12 +852,12 @@ public class Main extends javax.swing.JFrame {
 
             if (CSVsuccess && righttype) {
                 CSVFileChooserDialog.setVisible(false);
-                System.out.println("main pre call");
                 int headersize = support.getCSVHeaderArray().length;
-                System.out.println(headersize);
                 headerFields = new String [headersize];
                 headerFields = support.getCSVHeaderArray();
-                System.out.println("main post call");
+                //starting the listmodel and combomodel for the step 2 window
+                setListModel();
+                setDataComboModel();
                 CSVStep2Dialog.setVisible(true);
                 //sets the label to show the number of fields left
                 labelCSV2Setup.setText(support.numberOfFieldsLeft());
@@ -747,7 +878,7 @@ public class Main extends javax.swing.JFrame {
         if (CSVSemicolonOption.isSelected()) {
             support.setupCSVDelim(";");
         }
-        System.out.println(support.getCSVDelim());
+        
     }//GEN-LAST:event_CSVSemicolonOptionActionPerformed
 
     private void CSVCommaOptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CSVCommaOptionActionPerformed
@@ -755,7 +886,7 @@ public class Main extends javax.swing.JFrame {
         if (CSVCommaOption.isSelected()) {
             support.setupCSVDelim(",");
         }
-        System.out.println(support.getCSVDelim());
+        
     }//GEN-LAST:event_CSVCommaOptionActionPerformed
 
     private void CSVLitDoubleQuoteOptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CSVLitDoubleQuoteOptionActionPerformed
@@ -763,7 +894,7 @@ public class Main extends javax.swing.JFrame {
         if (CSVLitDoubleQuoteOption.isSelected()) {
             support.setupCSVLiteral("\"");
         }
-        System.out.println(support.getCSVLiteral());
+        
     }//GEN-LAST:event_CSVLitDoubleQuoteOptionActionPerformed
 
     private void CSVLitNoQuoteOptionMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CSVLitNoQuoteOptionMouseEntered
@@ -771,7 +902,7 @@ public class Main extends javax.swing.JFrame {
         if (CSVLitNoQuoteOption.isSelected()) {
             support.setupCSVLiteral(" ");
         }
-        System.out.println("*"+support.getCSVLiteral()+"*");
+        
 
     }//GEN-LAST:event_CSVLitNoQuoteOptionMouseEntered
 
@@ -780,7 +911,7 @@ public class Main extends javax.swing.JFrame {
         if (CSVTabOption.isSelected()) {
             support.setupCSVDelim("\t");
         }
-        System.out.println(support.getCSVDelim());
+        
     }//GEN-LAST:event_CSVTabOptionActionPerformed
 
     private void CSVSpaceOptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CSVSpaceOptionActionPerformed
@@ -788,7 +919,7 @@ public class Main extends javax.swing.JFrame {
         if (CSVSpaceOption.isSelected()) {
             support.setupCSVDelim(" ");
         }
-        System.out.println(support.getCSVDelim());
+        
     }//GEN-LAST:event_CSVSpaceOptionActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -809,7 +940,7 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_CreateCypherMenuOptionActionPerformed
 
     private void SaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveButtonActionPerformed
-        //TODO inserir janela para save file e metodo para guardar o ficheiro
+        
         //atencao ao \n que tem de ser trabalhado para funcionar em todas as plataformas
         saveTextAreaDialog.setVisible(true);
         saveTextAreaDialog.toFront();
@@ -823,13 +954,13 @@ public class Main extends javax.swing.JFrame {
         clpbrd.setContents(select, null);
     }//GEN-LAST:event_clipboardButtonActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void CSVStep2OKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CSVStep2OKActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton4ActionPerformed
+    }//GEN-LAST:event_CSVStep2OKActionPerformed
 
-    private void CSVDialog2CancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CSVDialog2CancelActionPerformed
+    private void CSVStep2CancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CSVStep2CancelActionPerformed
         CSVStep2Dialog.setVisible(false);
-    }//GEN-LAST:event_CSVDialog2CancelActionPerformed
+    }//GEN-LAST:event_CSVStep2CancelActionPerformed
 
     private void textAreaSaveFileChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textAreaSaveFileChooserActionPerformed
         if (evt.getActionCommand().equals("CancelSelection")) {
@@ -843,6 +974,33 @@ public class Main extends javax.swing.JFrame {
             saveTextAreaDialog.setVisible(false);
         }
     }//GEN-LAST:event_textAreaSaveFileChooserActionPerformed
+
+    private void CSVheaderListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_CSVheaderListValueChanged
+        // TODO add your handling code here:
+        CSVstep2FieldSummary.setText("");
+        CSVstep2FieldSummary.setText(support.getCSVFieldSummary
+        (CSVheaderList.getSelectedValue().toString()));
+    }//GEN-LAST:event_CSVheaderListValueChanged
+
+    private void dataPropCancBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dataPropCancBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_dataPropCancBtnActionPerformed
+
+    private void CSVfieldSetupButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CSVfieldSetupButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_CSVfieldSetupButton1ActionPerformed
+
+    private void CSVfieldSetupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CSVfieldSetupButtonActionPerformed
+        headerSelected = CSVheaderList.getSelectedValue().toString();
+        CSVStep3Data.setVisible(true);
+        CSVStep3Data.toFront();
+        String dataPropStr = support.getCSVColumnUniques(headerSelected);
+        dataPropValuePane.setText(dataPropStr);
+    }//GEN-LAST:event_CSVfieldSetupButtonActionPerformed
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBox1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -883,7 +1041,6 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JDialog AboutDialog;
     private javax.swing.JRadioButton CSVCommaOption;
     private javax.swing.JMenuItem CSVCypherMenuOption;
-    private javax.swing.JButton CSVDialog2Cancel;
     private javax.swing.JDialog CSVErrorDialog;
     private javax.swing.JFileChooser CSVFileChooser;
     private javax.swing.JDialog CSVFileChooserDialog;
@@ -892,10 +1049,15 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JRadioButton CSVLitSingleQuoteOption;
     private javax.swing.JRadioButton CSVSemicolonOption;
     private javax.swing.JRadioButton CSVSpaceOption;
+    private javax.swing.JButton CSVStep2Cancel;
     private javax.swing.JDialog CSVStep2Dialog;
+    private javax.swing.JButton CSVStep2OK;
+    private javax.swing.JDialog CSVStep3Data;
     private javax.swing.JRadioButton CSVTabOption;
     private javax.swing.JButton CSVfieldSetupButton;
+    private javax.swing.JButton CSVfieldSetupButton1;
     private javax.swing.JList CSVheaderList;
+    private javax.swing.JTextArea CSVstep2FieldSummary;
     private javax.swing.JMenuItem CreateCypherMenuOption;
     private javax.swing.JMenu CypherMenu;
     private javax.swing.ButtonGroup DelimGrp;
@@ -918,11 +1080,16 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenuItem addIndividualMenuOption;
     private javax.swing.JMenuItem addInformationMenuOption;
     private javax.swing.JButton clipboardButton;
+    private javax.swing.JLabel csv2PermanentLabel;
+    private javax.swing.JButton dataPropCancBtn;
+    private javax.swing.JButton dataPropOKBtn;
+    private javax.swing.JLabel dataPropStaticLabel;
+    private javax.swing.JTextArea dataPropValuePane;
     private java.awt.Label emailAbout;
     private javax.swing.JDialog individualDialog;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton4;
+    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JFrame jFrame1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -932,9 +1099,9 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane2;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JLabel labelCSV2Setup;
     private javax.swing.JMenuBar mainBar;
     private javax.swing.JTextArea mainCypherDisplay;
