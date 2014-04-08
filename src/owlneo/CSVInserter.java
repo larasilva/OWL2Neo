@@ -12,10 +12,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLDataProperty;
+import org.semanticweb.owlapi.model.OWLEntity;
+import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
 
 /**
@@ -30,8 +34,10 @@ public class CSVInserter {
     private String delimiter;
     private String literal;
     private String idField;
+    private HashMap <String, OWLEntity> header2Property;
 
     public CSVInserter(File filelocal) {
+        header2Property = new HashMap();
         line = 0;
         column = 0;
         delimiter = ";";
@@ -44,6 +50,7 @@ public class CSVInserter {
     }
     
     public CSVInserter(File filelocal, String delimiter, String literal){
+        header2Property = new HashMap();
         line = 0;
         column = 0;
         this.delimiter=delimiter;
@@ -117,7 +124,7 @@ public class CSVInserter {
         }
     }
 
-    private ArrayList<String> getColumnAtIndex(int index) {
+    public ArrayList<String> getColumnAtIndex(int index) {
         String lineValue="";
         ArrayList<String> lineValues=new ArrayList();
         try {
@@ -233,6 +240,38 @@ public class CSVInserter {
         //true if the unique values multiplied by 3 are more than the 
         //whole array of values
         return (uniques.size()*3>column2check.size());
+    }
+    
+    public int getNumberSetupFields(){
+        return header2Property.size();
+    }
+    /**
+     * @returns true if the value wasn't already mapped     
+    */
+    public boolean setPair(String header, OWLDataProperty dataProperty){
+        OWLEntity put = header2Property.put(header, dataProperty);
+        return put == null;
+    }
+    /**
+     * @returns true if the value wasn't already mapped     
+    */
+    public boolean setPair(String header, OWLObjectProperty objectProperty){
+        OWLEntity put = header2Property.put(header, objectProperty);
+        return put == null;
+    }
+    
+    public String getFieldSummary(String header){
+        if (header2Property.containsKey(header)){
+            String result = "Field: "+header+"\nStatus: configured\n";
+            if (header2Property.get(header).isOWLDataProperty()){         
+                result = result + "Type: DataProperty";
+            }
+            if (header2Property.get(header).isOWLObjectProperty()){
+                result = result + "Type: ObjectProperty";
+            }
+            return result;
+        }
+        else return "Field: "+header+"\nStatus: NOT configured.";
     }
 
 }
