@@ -34,7 +34,7 @@ public class CSVInserter {
     private String delimiter;
     private String literal;
     private String idField;
-    private HashMap <String, OWLEntity> header2Property;
+    private final HashMap <String, OWLEntity> header2Property;
 
     public CSVInserter(File filelocal) {
         header2Property = new HashMap();
@@ -123,6 +123,8 @@ public class CSVInserter {
             return null;
         }
     }
+    
+    
 
     public ArrayList<String> getColumnAtIndex(int index) {
         String lineValue="";
