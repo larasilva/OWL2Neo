@@ -461,7 +461,6 @@ public class Main extends javax.swing.JFrame {
         );
 
         CSVStep2Dialog.setMinimumSize(new java.awt.Dimension(500, 400));
-        CSVStep2Dialog.setPreferredSize(new java.awt.Dimension(500, 400));
 
         CSVheaderList.setSelectedIndex(0);
         CSVheaderList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
@@ -557,7 +556,7 @@ public class Main extends javax.swing.JFrame {
         );
 
         CSVStep3Data.setTitle("Setup as Data Property");
-        CSVStep3Data.setMaximumSize(null);
+        CSVStep3Data.setMaximumSize(new java.awt.Dimension(300, 440));
         CSVStep3Data.setMinimumSize(new java.awt.Dimension(300, 440));
         CSVStep3Data.setModal(true);
         CSVStep3Data.setResizable(false);
@@ -987,13 +986,28 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_dataPropCancBtnActionPerformed
 
     private void CSVfieldSetupButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CSVfieldSetupButton1ActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_CSVfieldSetupButton1ActionPerformed
 
     private void CSVfieldSetupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CSVfieldSetupButtonActionPerformed
         headerSelected = CSVheaderList.getSelectedValue().toString();
+        System.out.println("headerSelected:"+headerSelected);
+        
+        
+        //test code
+        CSVParse csvp = new CSVParse(OWLFileChooser.getSelectedFile(),
+                support.getCSVDelim().charAt(0),support.getCSVLiteral().charAt(0));
+        System.out.println("csvfieldbuttonpressed:");
+        System.out.println(csvp.getColumnUniques(3).size());
+        String lists = "";
+        for (String s:csvp.getColumnUniques(3)){
+            lists = lists + s + "\n";
+        }
+        dataPropValuePane.setText(lists);
         CSVStep3Data.setVisible(true);
         CSVStep3Data.toFront();
+        
+        //end of test code
         String dataPropStr = support.getCSVColumnUniques(headerSelected);
         dataPropValuePane.setText(dataPropStr);
     }//GEN-LAST:event_CSVfieldSetupButtonActionPerformed
